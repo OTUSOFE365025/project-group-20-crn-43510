@@ -22,7 +22,6 @@ For Iteration 2, we continue with the AIDAP system design. The inputs remain the
 
 ## Step 3: Choose One or More Elements of the System to Refine
 
-The elements that will be refined in this iteration are the modules located in the different layers defined by the reference architectures from the previous iteration:
 
 - **Application Logic Layer** – Decompose into specific business logic modules
 - **AI Services Layer** – Define AI/NLP components and their interfaces
@@ -48,7 +47,6 @@ In this iteration, several design concepts are selected. The following table sum
 
 ## Step 5: Instantiate Architectural Elements, Allocate Responsibilities, and Define Interfaces
 
-The instantiation design decisions considered and made are summarized in the following table:
 
 | **Design Decision and Location** | **Rationale** |
 |----------------------------------|---------------|
