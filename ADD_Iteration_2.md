@@ -64,29 +64,37 @@ While the structures and interfaces are identified in this step of the method, t
 
 ### Table 1 — UC-1 & UC-2 Interface Specifications (Data Retrieval)
 
-| **Component** | **Method** | **Description** |
-|--------------|------------|-----------------|
-| **QueryController** | processQuery(String text, User session) | Entry point for student queries; routes to AI Service, retrieves data, returns response. |
-| **QueryController** | explainResponse(String responseID) | Provides follow-up explanation for a previous query response. |
-| **DashboardManager** | getDashboard(User session) | Aggregates dashboard data from parallel adapter calls. |
-| **DashboardManager** | refreshDashboard(String userID) | Forces a dashboard refresh by clearing cache and fetching fresh data. |
-| **AIServiceFacade** | analyze(String text, String language) | Extracts intent and entities from natural language text. |
-| **AIServiceFacade** | generateResponse(Intent intent, List<Data> context) | Produces natural-language responses using intent + institutional data. |
-| **LMSAdapter** | getCourses(String userID) | Retrieves enrolled courses from the LMS. |
-| **LMSAdapter** | getGrades(String userID) | Retrieves student grade information. |
-| **LMSAdapter** | getSubmissions(String userID) | Retrieves assignment submissions for the student. |
-| **CalendarAdapter** | getUpcomingEvents(String userID) | Returns upcoming class meetings, deadlines, and exams. |
-| **CalendarAdapter** | getDeadlines(String courseID) | Retrieves assignment and exam deadlines for a specific course. |
-| **CalendarAdapter** | addEvent(Event event) | Creates a new event in the university calendar. |
-| **RegistrationAdapter** | getEnrollments(String userID) | Returns the student’s current course enrollments. |
-| **RegistrationAdapter** | getCourseInfo(String courseID) | Retrieves detailed course information. |
-| **QueryHistoryRepository** | save(Query query, Response response) | Stores query/response pairs for audit trail compliance (CON-9). |
-| **QueryHistoryRepository** | findByUser(String userID, Date from, Date to) | Retrieves user query history within the specified date range. |
-| **QueryHistoryRepository** | getPopularQueries(int limit) | Returns the most frequently submitted queries. |
-| **CacheManager** | get(String key) | Retrieves cached data by key. |
-| **CacheManager** | set(String key, Object value, int ttlSeconds) | Stores data with time-to-live (TTL). |
-| **CacheManager** | invalidate(String key) | Removes a single cached entry. |
-| **CacheManager** | invalidatePattern(String keyPattern) | Removes multiple cached entries using a wildcard pattern. |
-| **UserRepository** | findById(String userID) | Retrieves user profile and permissions. |
-| **UserRepository** | save(User user) | Persists updated user profile information. |
+## Step 6: Interface Specifications  
+### Table — UC-1 Interface Specifications (Based on Sequence Diagram)
+
+| **Component**          | **Method**                                | **Description** |
+|------------------------|--------------------------------------------|-----------------|
+| **QueryController**    | processQuery(text)                         | Receives the student’s query and starts the processing workflow. |
+| **QueryController**    | Response(processed)                        | Returns the final processed response back to the student. |
+| **AIServiceFacade**    | analyze(text, lang)                        | Performs NLP analysis and extracts intent from the user query. |
+| **RegistrationAdapter**| fetchContext(userId / courseId)            | Retrieves contextual enrollment or course data needed for intent resolution. |
+| **QueryHistoryRepo**   | save(query, response)                      | Stores query and response to maintain analytics and history. |
+| **DashboardManager**   | getDashboard(session)                      | Initiates dashboard data assembly by calling IntegrationFacade. |
+| **IntegrationFacade**  | fetchLMSData(userId)                       | Retrieves LMS-based data required for dashboard generation. |
+| **IntegrationFacade**  | fetchCalendarData(userId)                  | Retrieves calendar events and academic deadlines. |
+| **IntegrationFacade**  | enrichCourseInfo()                         | Combines LMS + calendar + metadata into unified dashboard results. |
+| **LMSAdapter**         | getCourseProgress(userId)                  | Retrieves the student’s course completion and grade progress. |
+| **CalendarAdapter**    | getUpcomingEvents(userId)                  | Returns upcoming university events, classes, and deadlines. |
+
+<img width="1315" height="644" alt="image" src="https://github.com/user-attachments/assets/56468f66-6543-4846-a6e8-97c925dc4ac8" />
+
+### Table — UC-4 & UC-5 Interface Specifications (Broadcasting + Admin Configuration)
+
+| **Component**              | **Method**                                      | **Description** |
+|----------------------------|--------------------------------------------------|-----------------|
+| **NotificationManager**    | broadcast(courseID, msg)                        | Initiates the announcement broadcast workflow triggered by the lecturer. |
+| **RegistrationAdapter**    | getStudentList(courseID)                        | Retrieves all enrolled students for the selected course. |
+| **EmailGateway**           | sendEmail(to, subject, body)                    | Sends an announcement email to each student in the list. |
+| **EmailGateway**           | email_sent                                      | Confirmation signal indicating successful email delivery. |
+| **DataRepository**         | saveCommunication(courseID, msg, timestamp)     | Logs the broadcast event and stores communication history. |
+| **Admin**                  | updateConfig(LMS_API_KEY)                       | Updates LMS-related configuration values in the system. |
+| **AdminController**        | testConnection(apiKey)                          | Validates whether the submitted API key is functional with LMS. |
+| **LMSAdapter**             | testConnection(apiKey)                          | Performs an API-level test call to verify LMS API key correctness. |
+| **ConfigurationRepository**| save(LMS_API_KEY)                               | Stores updated configuration values securely (encrypted). |
+| **SystemLogger**           | logConfigChange(adminID, key, status)           | Records configuration changes for auditing and traceability. |
 
