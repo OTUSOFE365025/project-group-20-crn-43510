@@ -59,3 +59,4 @@ In this iteration, several design concepts are selected. The following table sum
 While the structures and interfaces are identified in this step of the method, they are captured in the next step.
 
 ---
+## Step 6: Sketch Views and Record Design Decisions
