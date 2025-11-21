@@ -1,61 +1,63 @@
+# Iteration 2: Identifying Structures to Support Primary Functionality
 
 ---
 
-# **Iteration 2**
-
-## **Step 1: Review Inputs**
+## Step 1: Review Inputs
 
 For Iteration 2, we continue with the AIDAP system design. The inputs remain the same as Iteration 1, but now we focus on refining the architectural elements to support primary functionality in detail.
 
 ---
 
-## **Step 2: Establish Iteration Goal by Selecting Drivers**
+## Step 2: Establish Iteration Goal by Selecting Drivers
 
 **Iteration Goal:** Identify structures to support primary functionality by defining specific modules, their responsibilities, and interfaces.
 
 **Selected Drivers for this Iteration:**
 
-* UC-1 (Query Academic Information) – Primary use case requiring AI interpretation
-* UC-2 (Manage Personal Academic Dashboard) – Requires data aggregation from multiple sources
-* UC-3 (Manage Course Content & Analytics) – Involves authentication and analytics processing
+- **UC-1 (Query Academic Information)** – Primary use case requiring AI interpretation
+- **UC-2 (Manage Personal Academic Dashboard)** – Requires data aggregation from multiple sources
+- **UC-3 (Manage Course Content & Analytics)** – Involves authentication and analytics processing
 
 ---
 
-## **Step 3: Choose One or More Elements of the System to Refine**
+## Step 3: Choose One or More Elements of the System to Refine
 
-The elements refined in this iteration include modules located in the different layers defined by prior reference architectures:
+The elements that will be refined in this iteration are the modules located in the different layers defined by the reference architectures from the previous iteration:
 
-* **Application Logic Layer** – Decompose into specific business logic modules
-* **AI Services Layer** – Define AI/NLP components and their interfaces
-* **Integration Layer** – Define adapters for external systems
-* **Data Layer** – Define data access and persistence modules
+- **Application Logic Layer** – Decompose into specific business logic modules
+- **AI Services Layer** – Define AI/NLP components and their interfaces
+- **Integration Layer** – Define specific adapters for external systems
+- **Data Layer** – Define data access and persistence modules
 
-Supporting system functionality requires collaboration among components across these layers.
-
----
-
-# **Step 4: Choose One or More Design Concepts That Satisfy the Selected Drivers**
-
-
-| **Design Decision**                                              | **Rationale**                                                                                                                                                                                                                                                                                                                                                                                        |
-| ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Create a Domain Model for the application                        | Before starting a functional decomposition, it is necessary to create an initial domain model for the system, identifying the major entities in the domain, along with their relationships. There are no good alternatives. A domain model must eventually be created, or it will emerge in a suboptimal fashion, leading to an ad hoc architecture that is hard to understand and maintain.         |
-| Identify Domain Objects that map to functional requirements      | Each unique functional aspect of the application needs to be encapsulated in a self-contained building block, a domain object. An alternate option would be to not worry about domain objects and go directly from layers to modules, but this would result in a lack of separation of concerns and make it difficult to modify specific AI capabilities.                                            |
-| Decompose Domain Objects into general and specialized Components | Domain objects represent complete functionality, but this functionality is backed by finer-grained pieces in the layers. These finer-grained “components” are what we refer to when we mention modules. Specialization corresponds to the layer where the module exists (e.g., UI modules). There are no good alternatives if functionality is to be properly supported.                             |
-| Use Python/Django framework and related technologies             | Django is a popular framework that facilitates web application development. It works with Python AI/ML frameworks. Alternatives such as Flask or Node.js were considered, but Django provides more built-in capability for rapid development speed and is familiar to the team. Building custom NLP from scratch was considered but rejected due to lack of maturity and excessive development time. |
+In general, the support of functionality in this system requires the collaboration of components associated with modules that are located in the different layers.
 
 ---
 
-# **Step 5 – Instantiate Architectural Elements, Allocate Responsibilities, and Define Interfaces**
+## Step 4: Choose One or More Design Concepts That Satisfy the Selected Drivers
 
-| **Design Decision and Location**                | **Rationale**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Create only an initial domain model             | The entities in the primary use case need to be identified and modeled, but only an initial domain model is created at this stage to speed early design.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| Map the system use cases to domain objects      | Domain objects can be identified by reviewing the system’s use cases. To support distributed team work, domain objects are identified for all use cases from Phase 1. This ensures full functional coverage. <br><br>**Mapping ensures all functionality is covered:**<br>• UC-1 → Query Processor, AI Interpreter, Knowledge Retriever<br>• UC-2 → Dashboard Manager, Data Aggregator<br>• UC-3 → Content Manager, Analytics Engine<br><br>The architect handles only primary use cases; additional modules are identified by other team members to divide work.                                                                                                                                                                                                                                                                 |
-| Identify need for testing (CRN-6)               | With modules identified, the architect notes that testing is required. **CRN-6: A majority of modules shall be unit tested.** UI modules are excluded because they are harder to test independently.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| Decompose the domain objects across layers      | Ensures each module supports a cohesive functional responsibility in alignment with the AIDAP architecture. Only primary use cases are decomposed this iteration. <br><br>**Decomposition results:**<br>• **Presentation CS:** QueryView, DashboardView, ContentManagementView<br>• **Business Logic CS:** QueryViewController, DashboardViewController, ContentViewController<br>• **Data CS:** RequestManager<br>• **Services SS:** RequestService<br>• **Business Logic SS:** QueryController, DashboardController, ContentController, Domain Entities<br>• **AI Services SS:** NLPInterpreter, SemanticSearch, ResponseGenerator<br>• **Integration SS:** IntegrationServiceFacade, LMSAdapter, CalendarAdapter, RegistrationAdapter, CacheManager<br>• **Data SS:** UserRepository, CourseRepository, QueryHistoryRepository |
-| Connect modules using Django                    | This approach supports module-level unit testing and aligns with CRN-6.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| Associate ORM framework with data-layer modules | ORM mapping is encapsulated in the modules that are contained in the Data SS layer. Django's built-in ORM framework previously selected is associated with these modules to handle persistence of domain entities to the relational database.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+In this iteration, several design concepts are selected. The following table summarizes the design decisions:
+
+| **Design Decision** | **Rationale** |
+|---------------------|---------------|
+| **Create a Domain Model for the application** | Before starting a functional decomposition, it is necessary to create an initial domain model for the system, identifying the major entities in the domain, along with their relationships. There are no good alternatives. A domain model must eventually be created, or it will emerge in a suboptimal fashion, leading to an ad hoc architecture that is hard to understand and maintain. |
+| **Identify Domain Objects that map to functional requirements** | Each distinct functional element of the application needs to be encapsulated in a self-contained building block—a domain object.<br><br>One possible alternative is to not consider domain objects and instead directly decompose layers into modules, but this increases the risk of not considering a requirement. Another discarded alternative was to create a single monolithic AI module, but this would result in a lack of separation of concerns and make it difficult to modify specific AI capabilities. |
+| **Decompose Domain Objects into general and specialized Components** | Domain objects represent complete sets of functionality, but this functionality is supported by finer-grained elements located within the layers. The "components" in this pattern are what we have referred to as modules. Specialization of modules is associated with the layers where they are located (e.g., UI modules).<br><br>There are no good alternatives to decomposing the layers into modules to support functionality. Direct database access from the presentation layer was considered but discarded as it violates layered architecture principles. |
+| **Use Python/Django framework and related technologies** | Django is a widely used framework to support web application development. It integrates well with Python-based AI/ML frameworks.<br><br>Alternative frameworks that were considered include Flask (more lightweight) and Node.js, but Django was selected because it provides more built-in functionality for rapid development and the team is already familiar with it, resulting in greater productivity.<br><br>Building custom NLP from scratch was also considered but discarded as it would be too time-consuming and less mature than existing solutions. |
+
+---
+
+## Step 5: Instantiate Architectural Elements, Allocate Responsibilities, and Define Interfaces
+
+The instantiation design decisions considered and made are summarized in the following table:
+
+| **Design Decision and Location** | **Rationale** |
+|----------------------------------|---------------|
+| **Create only an initial domain model** | The entities that participate in the primary use cases need to be identified and modeled but only an initial domain model is created, to accelerate this phase of design. |
+| **Map the system use cases to domain objects** | An initial identification of domain objects can be made by analyzing the system's use cases. To support work allocation, domain objects are identified for all of the use cases presented in the use case model from Phase 1. This technique ensures that modules that support all of the functionalities are identified.<br><br>**Mapping ensures all functionality is covered:**<br>• UC-1 → Query Processor, AI Interpreter, Knowledge Retriever<br>• UC-2 → Dashboard Manager, Data Aggregator<br>• UC-3 → Content Manager, Analytics Engine<br><br>The architect will perform this task just for the primary use cases. This allows another team member to identify the rest of the modules, thereby allocating work among team members.<br><br>Having established the set of modules, the architect realizes the need to test these modules, so a new architectural concern is identified here:<br><br>**CRN-6: A majority of modules shall be unit tested.**<br><br>Only "a majority of modules" are covered by this concern because the modules that implement user interface functionality are difficult to test independently. |
+| **Decompose the domain objects across the layers to identify layer-specific modules with an explicit interface** | This technique ensures each module supports a cohesive functional responsibility aligned with the AIDAP architecture from Iteration 1. Only the primary use cases are decomposed in this iteration.<br><br>**The decomposition leads to:**<br>• **Presentation CS**: QueryView, DashboardView, ContentManagementView<br>• **Business Logic CS**: QueryViewController, DashboardViewController, ContentViewController<br>• **Data CS**: RequestManager<br>• **Services SS**: RequestService<br>• **Business Logic SS**: QueryController, DashboardController, ContentController, Domain Entities<br>• **AI Services SS**: NLPInterpreter, SemanticSearch, ResponseGenerator<br>• **Integration SS**: IntegrationServiceFacade, LMSAdapter, CalendarAdapter, RegistrationAdapter, CacheManager<br>• **Data SS**: UserRepository, CourseRepository, QueryHistoryRepository |
+| **Connect components associated with modules using Django** | This framework uses an approach that allows different aspects to be supported and the modules to be unit-tested (CRN-6). |
+| **Associate ORM framework with modules in the data layer** | ORM mapping is encapsulated in the modules that are contained in the Data SS layer. Django's built-in ORM framework previously selected is associated with these modules to handle persistence of domain entities to the relational database. |
+
+While the structures and interfaces are identified in this step of the method, they are captured in the next step.
 
 ---
