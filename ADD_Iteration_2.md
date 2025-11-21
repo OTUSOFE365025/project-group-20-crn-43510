@@ -59,4 +59,34 @@ In this iteration, several design concepts are selected. The following table sum
 While the structures and interfaces are identified in this step of the method, they are captured in the next step.
 
 ---
-## Step 6: Sketch Views and Record Design Decisions
+## Step 6: Interface Specifications  
+<img width="1175" height="700" alt="image" src="https://github.com/user-attachments/assets/0aa34733-7447-4788-8601-0960bdc58db4" />
+
+### Table 1 — UC-1 & UC-2 Interface Specifications (Data Retrieval)
+
+| **Component** | **Method** | **Description** |
+|--------------|------------|-----------------|
+| **QueryController** | processQuery(String text, User session) | Entry point for student queries; routes to AI Service, retrieves data, returns response. |
+| **QueryController** | explainResponse(String responseID) | Provides follow-up explanation for a previous query response. |
+| **DashboardManager** | getDashboard(User session) | Aggregates dashboard data from parallel adapter calls. |
+| **DashboardManager** | refreshDashboard(String userID) | Forces a dashboard refresh by clearing cache and fetching fresh data. |
+| **AIServiceFacade** | analyze(String text, String language) | Extracts intent and entities from natural language text. |
+| **AIServiceFacade** | generateResponse(Intent intent, List<Data> context) | Produces natural-language responses using intent + institutional data. |
+| **LMSAdapter** | getCourses(String userID) | Retrieves enrolled courses from the LMS. |
+| **LMSAdapter** | getGrades(String userID) | Retrieves student grade information. |
+| **LMSAdapter** | getSubmissions(String userID) | Retrieves assignment submissions for the student. |
+| **CalendarAdapter** | getUpcomingEvents(String userID) | Returns upcoming class meetings, deadlines, and exams. |
+| **CalendarAdapter** | getDeadlines(String courseID) | Retrieves assignment and exam deadlines for a specific course. |
+| **CalendarAdapter** | addEvent(Event event) | Creates a new event in the university calendar. |
+| **RegistrationAdapter** | getEnrollments(String userID) | Returns the student’s current course enrollments. |
+| **RegistrationAdapter** | getCourseInfo(String courseID) | Retrieves detailed course information. |
+| **QueryHistoryRepository** | save(Query query, Response response) | Stores query/response pairs for audit trail compliance (CON-9). |
+| **QueryHistoryRepository** | findByUser(String userID, Date from, Date to) | Retrieves user query history within the specified date range. |
+| **QueryHistoryRepository** | getPopularQueries(int limit) | Returns the most frequently submitted queries. |
+| **CacheManager** | get(String key) | Retrieves cached data by key. |
+| **CacheManager** | set(String key, Object value, int ttlSeconds) | Stores data with time-to-live (TTL). |
+| **CacheManager** | invalidate(String key) | Removes a single cached entry. |
+| **CacheManager** | invalidatePattern(String keyPattern) | Removes multiple cached entries using a wildcard pattern. |
+| **UserRepository** | findById(String userID) | Retrieves user profile and permissions. |
+| **UserRepository** | save(User user) | Persists updated user profile information. |
+
