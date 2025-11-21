@@ -59,13 +59,22 @@ In this iteration, several design concepts are selected. The following table sum
 While the structures and interfaces are identified in this step of the method, they are captured in the next step.
 
 ---
-## Step 6: Interface Specifications  
+## Step 6: Sketch Views and Record Design Decisions
+
+Completed views for this iteration:
+
+### Refined Logical Architecture (Module View)
+
+<img width="947" height="694" alt="image" src="https://github.com/user-attachments/assets/ed5c0677-4b15-4815-a5bd-ef5b972c295e" />
+
+Sequence Diagramm
+
 <img width="1175" height="700" alt="image" src="https://github.com/user-attachments/assets/0aa34733-7447-4788-8601-0960bdc58db4" />
 
 ### Table 1 — UC-1 & UC-2 Interface Specifications (Data Retrieval)
 
 ## Step 6: Interface Specifications  
-### Table — UC-1 Interface Specifications (Based on Sequence Diagram)
+### Table - UC-1 Interface Specifications (Based on Sequence Diagram)
 
 | **Component**          | **Method**                                | **Description** |
 |------------------------|--------------------------------------------|-----------------|
@@ -83,7 +92,7 @@ While the structures and interfaces are identified in this step of the method, t
 
 <img width="1315" height="644" alt="image" src="https://github.com/user-attachments/assets/56468f66-6543-4846-a6e8-97c925dc4ac8" />
 
-### Table — UC-4 & UC-5 Interface Specifications (Broadcasting + Admin Configuration)
+### Table - UC-4 & UC-5 Interface Specifications (Broadcasting + Admin Configuration)
 
 | **Component**              | **Method**                                      | **Description** |
 |----------------------------|--------------------------------------------------|-----------------|
@@ -97,4 +106,23 @@ While the structures and interfaces are identified in this step of the method, t
 | **LMSAdapter**             | testConnection(apiKey)                          | Performs an API-level test call to verify LMS API key correctness. |
 | **ConfigurationRepository**| save(LMS_API_KEY)                               | Stores updated configuration values securely (encrypted). |
 | **SystemLogger**           | logConfigChange(adminID, key, status)           | Records configuration changes for auditing and traceability. |
+
+---
+## Step 7 — Analyze Current Design & Review Iteration (Short Version)
+
+Driver / Item | Not Addressed | Partially Addressed | Completely Addressed | Decisions Made
+-------------|----------------|----------------------|-----------------------|----------------
+UC-1 Query Institutional Data |  |  | ✓ | Core modules (QueryController, AIServiceFacade, IntegrationFacade) fully mapped.
+UC-2 Post Announcements |  |  | ✓ | Notification pipeline defined (NotificationManager, EmailGateway, DataRepository).
+UC-4 Broadcast Notifications |  |  | ✓ | End-to-end broadcast flow introduced (student lookup → email send → log).
+UC-5 Update Configurations |  |  | ✓ | AdminController + ConfigRepository + LMSAdapter integrated for secure updates.
+UC-7 External Data Sync |  |  | ✓ | Synchronization logic established via ExternalAPIConnector + ExternalDataService.
+QA-1 Performance |  |  | ✓ | Parallel data calls + caching support fast responses.
+QA-2 Availability |  | ✓ |  | Recovery and failover strategies noted but not fully defined yet.
+QA-3 Scalability | ✓ |  |  | No new improvements; relies on future cloud deployment.
+QA-4 Security |  |  | ✓ | RBAC, config validation, encrypted storage incorporated.
+CON-1 Security & Privacy | ✓ |  |  | No new compliance decisions in this iteration.
+CON-4 REST API Integration |  |  | ✓ | Unified ExternalAPIConnector chosen for LMS/Calendar/Registration APIs.
+CRN-4 Data Persistence |  |  | ✓ | Communication logs + config history stored via DataRepository + ConfigRepository.
+CRN-5 Synchronization |  |  | ✓ | External sync workflow now complete for institutional data.
 
