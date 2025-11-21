@@ -67,14 +67,12 @@ Completed views for this iteration:
 
 <img width="947" height="694" alt="image" src="https://github.com/user-attachments/assets/ed5c0677-4b15-4815-a5bd-ef5b972c295e" />
 
-Sequence Diagramm
+Sequence Diagrams
 
 <img width="1175" height="700" alt="image" src="https://github.com/user-attachments/assets/0aa34733-7447-4788-8601-0960bdc58db4" />
 
-### Table 1 — UC-1 & UC-2 Interface Specifications (Data Retrieval)
 
-## Step 6: Interface Specifications  
-### Table - UC-1 Interface Specifications (Based on Sequence Diagram)
+### Table 1 — UC-1 & UC-2 Interface Specifications 
 
 | **Component**          | **Method**                                | **Description** |
 |------------------------|--------------------------------------------|-----------------|
@@ -92,7 +90,7 @@ Sequence Diagramm
 
 <img width="1315" height="644" alt="image" src="https://github.com/user-attachments/assets/56468f66-6543-4846-a6e8-97c925dc4ac8" />
 
-### Table - UC-4 & UC-5 Interface Specifications (Broadcasting + Admin Configuration)
+### Table - UC-4 & UC-5 Interface Specifications 
 
 | **Component**              | **Method**                                      | **Description** |
 |----------------------------|--------------------------------------------------|-----------------|
@@ -108,7 +106,7 @@ Sequence Diagramm
 | **SystemLogger**           | logConfigChange(adminID, key, status)           | Records configuration changes for auditing and traceability. |
 
 ---
-## Step 7 — Analyze Current Design & Review Iteration (Short Version)
+## Step 7 - Analyze Current Design & Review Iteration 
 
 Driver / Item | Not Addressed | Partially Addressed | Completely Addressed | Decisions Made
 -------------|----------------|----------------------|-----------------------|----------------
