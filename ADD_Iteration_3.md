@@ -258,7 +258,7 @@ Small adjustments (e.g., CPU 70% → 80%) significantly change cost and performa
 **Benefit:** Consistent enforcement and simplified app logic
 
 ---
-## ** Utility Tree **
+## Utility Tree 
 
 <img width="662" height="767" alt="Screenshot 2025-12-02 at 7 48 47 PM" src="https://github.com/user-attachments/assets/3148de7d-992f-4d1a-9591-34ab314d532f" />
 
