@@ -122,3 +122,141 @@ In this iteration, several design concepts are selected. The following table sum
 | **R5** | Availability | Auto-scaling takes too long during sudden traffic spikes | Medium | High | Pre-warm instances during predictable peak times; use faster instance startup mechanisms |
 | **R6** | Monitoring | Log aggregation system failure loses critical security audit data | High | Low | Implement redundant logging pipelines; buffer logs locally with retry mechanisms |
 
+
+---
+
+# **Detailed Risk Analysis**
+
+## **R1: API Gateway Single Point of Failure**
+
+**Description:**
+While the application servers scale horizontally, the API Gateway can become a bottleneck or a single point of failure if it becomes overloaded or crashes.
+
+**Impact:**
+Complete system unavailability; all user requests fail before reaching the backend.
+
+**Sensitivity:**
+System availability is highly dependent on API Gateway health.
+
+**Mitigation:**
+
+* Deploy multiple API Gateway instances across different availability zones
+* Use DNS-based load balancing or a Network Load Balancer
+* Implement health checks and automatic failover
+* Monitor API Gateway performance metrics closely
+
+---
+
+## **R2: Redis Cluster Failure**
+
+**Description:**
+A failure in the Redis cluster results in all active user sessions being lost, forcing re-authentication and potential loss of temporary data.
+
+**Impact:**
+Poor user experience, potential temporary data loss, spike in authentication load.
+
+**Sensitivity:**
+Session availability is highly sensitive to Redis uptime.
+
+**Mitigation:**
+
+* Use Redis Sentinel for automatic failover and high availability
+* Enable Redis persistence (AOF or RDB) for session recovery
+* Consider backing up session data to secondary storage
+* Implement session timeout warnings to reduce user disruption
+
+---
+
+## **R3: SSO Provider Downtime**
+
+**Description:**
+If the external SSO provider experiences downtime, users cannot authenticate, blocking system access.
+
+**Impact:**
+No new sessions can be started; partial service degradation for logged-in users.
+
+**Sensitivity:**
+System usability is fully dependent on SSO provider availability.
+
+**Mitigation:**
+
+* Cache recently validated tokens with short TTL
+* Provide emergency access for critical administrators
+* Proactively monitor SSO provider health
+* Ensure SSO provider has a strong SLA (e.g., 99.5% uptime)
+
+---
+
+# **Sensitivity Points**
+
+## **SP1: Auto-Scaling Threshold**
+
+Small adjustments (e.g., CPU 70% → 80%) significantly change cost and performance.
+
+**Tradeoff:**
+
+* Lower threshold → better performance, higher cost
+* Higher threshold → lower cost, risk of slower performance
+
+---
+
+## **SP2: Database Replication Synchronicity**
+
+* **Synchronous:** Strong consistency, increased write latency
+* **Asynchronous:** Lower latency, risk of data loss during failover
+
+**Tradeoff:** Data consistency vs. write performance
+
+---
+
+## **SP3: Session Cache TTL**
+
+* **Short TTL:** More secure, but frequent authentication
+* **Long TTL:** Better UX, but increased security risk
+
+**Tradeoff:** Security vs. convenience
+
+---
+
+# **Architectural Tradeoffs**
+
+## **T1: Stateless Application Servers vs. Complexity**
+
+**Decision:** Use stateless app servers with Redis for session storage
+**Rationale:** Enables horizontal scaling and easier load balancing
+**Impact:** Higher infrastructure complexity; dependency on Redis
+**Benefit:**
+
+* Scale to 5000+ users
+* Rolling updates without session loss
+
+---
+
+## **T2: Active/Passive Database Replication vs. Cost**
+
+**Decision:** Use primary–replica replication
+**Rationale:** Simple, reliable, meets 99.5% availability
+**Impact:** Replica is idle except during failover
+**Benefit:** Lower cost, easier consistency model
+
+---
+
+## **T3: Centralized Logging vs. Performance**
+
+**Decision:** Route all logs to ELK stack
+**Rationale:** Needed for security audits and monitoring
+**Impact:** Added network overhead; dependency on logging infrastructure
+**Benefit:** Complete visibility for debugging and compliance
+
+---
+
+## **T4: API Gateway Overhead vs. Security**
+
+**Decision:** All traffic flows through the API Gateway
+**Rationale:** Centralized security, SSO validation, rate limiting
+**Impact:** Extra network hop adds ~10–20 ms latency
+**Benefit:** Consistent enforcement and simplified app logic
+
+---
+
+
