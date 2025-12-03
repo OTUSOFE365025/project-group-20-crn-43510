@@ -92,6 +92,7 @@ In this iteration, several design concepts are selected. The following table sum
 
 
 ### Diagram 2: Sequence Diagram for QA-5 (Security/SSO)
+<img width="825" height="761" alt="image" src="https://github.com/user-attachments/assets/80d8f8a5-0365-4718-b841-eb7fbd41d803" />
 
 
 ---
@@ -106,4 +107,18 @@ In this iteration, several design concepts are selected. The following table sum
 | CON-5 (SSO) |  |  | Yes | Modeled in the Security Sequence Diagram. |
 | CRN-6 (Zero Downtime) |  |  | Yes | Architecture supports rolling updates for zero downtime. |
 | UC-6 (Monitor Health) |  |  | Yes | Centralized logging and monitoring provides the dashboard needed by the maintainer. |
+
+
+## ATAM Risk Assessment
+
+### Risk Assessment Table
+
+| Risk ID | Quality Attribute | Risk Description | Impact | Probability | Mitigation Strategy |
+|---------|-------------------|------------------|--------|-------------|----------------------|
+| **R1** | Availability | Single API Gateway becomes bottleneck or single point of failure | High | Medium | Deploy multiple API Gateway instances behind a DNS load balancer with health checks |
+| **R2** | Scalability | Redis cluster failure causes session loss for all users | High | Low | Implement Redis Sentinel with automatic failover and session persistence to backup storage |
+| **R3** | Security | SSO Provider downtime prevents all user access | High | Low | Implement graceful degradation with cached token validation and manual override for critical operations |
+| **R4** | Performance | Database replication lag causes stale data reads | Medium | Medium | Monitor replication lag; route critical reads to primary; use eventual consistency patterns |
+| **R5** | Availability | Auto-scaling takes too long during sudden traffic spikes | Medium | High | Pre-warm instances during predictable peak times; use faster instance startup mechanisms |
+| **R6** | Monitoring | Log aggregation system failure loses critical security audit data | High | Low | Implement redundant logging pipelines; buffer logs locally with retry mechanisms |
 
